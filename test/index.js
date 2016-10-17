@@ -1,6 +1,6 @@
 var should = require('chai').should(),
-    ibanGenerator = require('../index'),
-    generate = ibanGenerator.generate;
+    ibanConstructor = require('../index'),
+    generate = ibanConstructor.generate;
 
 describe('#generate', function(){
     it('generate an iban', function() {

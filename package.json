@@ -1,6 +1,6 @@
 {
-  "name": "gheb-iban-generator",
-  "version": "1.0.2",
+  "name": "iban-constructor",
+  "version": "1.0.3",
   "description": "library to generate iban",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GregoireHebert/iban-generator.git"
+    "url": "https://github.com/GregoireHebert/iban-constructor.git"
   },
   "keywords": [
     "iban",
@@ -17,9 +17,9 @@
   "author": "Grégoire Hébert <gregoire@les-tilleuls.coop> (http://les-tilleuls.coop)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/GregoireHebert/iban-generator/issues"
+    "url": "https://github.com/GregoireHebert/iban-constructor/issues"
   },
-  "homepage": "https://github.com/GregoireHebert/iban-generator#readme",
+  "homepage": "https://github.com/GregoireHebert/iban-constructor#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.1.2"

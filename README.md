@@ -5,12 +5,12 @@ A small library providing utility methods to generate IBAN from country code, ba
 
 ## Installation
 
-  npm install gheb-iban-generator --save
+  npm install iban-constructor --save
 
 ## Usage
 
-  var ibanGenerator = require('iban-generator')
-       generateIban = ibanGenerator.generate;
+  var ibanConstructor = require('iban-constructor')
+       generateIban = ibanConstructor.generate;
 
   var generatedIban = generateIban('FR', '30004', 00001', '00000000001')
     .success(function (iban) {
@@ -46,8 +46,10 @@ A small library providing utility methods to generate IBAN from country code, ba
 ## Release History
 
 * 1.0.0 Initial release
+* 1.0.1 Update doc
+* 1.0.2 Update doc
+* 1.0.3 Rename
 
 ## Todo
 
-  * Add more test
-  * Clean JS
+  * Handle swift codes and check bank exists
