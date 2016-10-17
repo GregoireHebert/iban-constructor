@@ -1,6 +1,4 @@
-
 var generator = {
-
     formats: [
         { "country": "Andorra", 				"code": "AD", "bank_code_format": "0  4n 4n", "account_format": "0  12   0 " },
         { "country": "Albania", 				"code": "AL", "bank_code_format": "0  8n 0 ", "account_format": "0  16   0 " },
@@ -64,9 +62,9 @@ var generator = {
             var parts = format.split(" ");
             for (var i = 0; i < parts.length; ++i) {
                 var part = parts[i];
-                if (part !== "") {
+                if ("" !== part) {
                     var type = part.slice(-1);
-                    if (type === "a" || type === "n") {
+                    if ("a" === type || "n" === type) {
                         part = part.slice(0, -1);
                     } else {
                         type = "c";
@@ -85,15 +83,15 @@ var generator = {
             return sum;
         };
 
-        this.country = format.country;
-        this.code = format.code;
-        this.bank = decodeCountryFormat(format.bank_code_format);
+        this.country    = format.country;
+        this.code       = format.code;
+        this.bank       = decodeCountryFormat(format.bank_code_format);
         this.bank_code_format = format.bank_code_format;
-        this.account = decodeCountryFormat(format.account_format);
+        this.account        = decodeCountryFormat(format.account_format);
         this.account_format = format.account_format;
-        this.bankLength = summerizeAllNumericValuesIn(this.bank);
-        this.accountLength = summerizeAllNumericValuesIn(this.account);
-        this.totalLength = 4 + this.bankLength + this.accountLength;
+        this.bankLength     = summerizeAllNumericValuesIn(this.bank);
+        this.accountLength  = summerizeAllNumericValuesIn(this.account);
+        this.totalLength    = 4 + this.bankLength + this.accountLength;
     },
 
     convertToDigitString: function (account) {
@@ -304,7 +302,7 @@ var generator = {
      *
      * Usage:
      *
-     * IBAN.generate(countryCode, bankCode, accountNumber)
+     * IBAN.generate(countryCode, bankCode, bankCounter accountNumber)
      *       .success(function (iban) {
      *            // yey!!!
      *       })
@@ -314,7 +312,8 @@ var generator = {
      *
      * @param countryCode Two character countrycode defined by ISO-standard
      * @param bankCode The bank code could be both alphanumeric characters A-Z and numbers
-     * @param account The account number
+     * @param bankCounter The bank counter must be numbers
+     * @param account The account must be numbers
      * @return object The resulting object with two function, success and error
      */
     generate: function (countryCode, bankCode, bankCounter, account) {

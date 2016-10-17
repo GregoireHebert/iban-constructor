@@ -1,6 +1,6 @@
 {
   "name": "gheb-iban-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "library to generate iban",
   "main": "index.js",
   "scripts": {
