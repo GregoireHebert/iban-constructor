@@ -1,3 +1,6 @@
+var util = require('./lib/util'),
+ helpers = require('./lib/bankHelpers');
+
 var generator = {
     formats: [
         { "country": "Andorra", 				"code": "AD", "bank_code_format": "0  4n 4n", "account_format": "0  12   0 " },
@@ -55,6 +58,9 @@ var generator = {
         { "country": "Turkey", 					"code": "TR", "bank_code_format": "0  5n 0 ", "account_format": "1  16   0 " }
     ],
 
+    /**
+     * @internal
+     */
     IbanFormat: function (format) {
 
         var decodeCountryFormat = function (format) {
@@ -94,41 +100,9 @@ var generator = {
         this.totalLength    = 4 + this.bankLength + this.accountLength;
     },
 
-    convertToDigitString: function (account) {
-        var digitString = '';
-        for (var index = 0; index < account.length; index++) {
-            var code = account[index].toUpperCase().charCodeAt(0);
-            digitString += code < 65 ? account[index] : code - 55;
-        }
-        return digitString;
-    },
-
-    mod97: function (digitString) {
-        var m = 0;
-        for (var i = 0; i < digitString.length; ++i) {
-            m = ((m * 10) + (digitString[i] |0)) % 97;
-        }
-        return m;
-    },
-
-    fillWithLeadingZeroBasedOnLength: function (string, length) {
-        if (string === null) {
-            string = '';
-        }
-        return string.length >= length ? string : new Array(length - string.length + 1).join('0') + string;
-    },
-
-    addSpaceAfterNumCharacters: function (string, numCharacters) {
-        var result = "";
-        for (var i = 0; i < string.length; ++i) {
-            if (i > 0 && i % numCharacters === 0) {
-                result += " ";
-            }
-            result += string[i];
-        }
-        return result;
-    },
-
+    /**
+     * @internal
+     */
     getIbanFormatFrom: function (countryCode) {
         for (var index = 0; index < generator.formats.length; index++) {
             var format = generator.formats[index];
@@ -142,6 +116,9 @@ var generator = {
         };
     },
 
+    /**
+     * @internal
+     */
     validateIbanLength: function (iban, country, countryCode) {
         if (country.totalLength !== iban.length) {
             throw {
@@ -151,6 +128,9 @@ var generator = {
         }
     },
 
+    /**
+     * @internal
+     */
     partIsInvalid: function (ibanPart, list) {
         for (var f = 0; f < list.length; ++f) {
             var length = list[f][0];
@@ -172,12 +152,15 @@ var generator = {
         return false;
     },
 
+    /**
+     * @internal
+     */
     getAccountNumber: function (bankCode, accountNumber, ibanFormat) {
         var account;
         if (bankCode) {
-            account = generator.convertToDigitString(accountNumber);
+            account = util.convertToDigitString(accountNumber);
         } else {
-            account = generator.convertToDigitString(accountNumber.substring(ibanFormat.bankLength));
+            account = util.convertToDigitString(accountNumber.substring(ibanFormat.bankLength));
         }
         if (generator.partIsInvalid(accountNumber, ibanFormat.account)) {
             throw {
@@ -187,9 +170,12 @@ var generator = {
         }
 
         generator.validateLength(account, ibanFormat.accountLength);
-        return generator.fillWithLeadingZeroBasedOnLength(account, ibanFormat.accountLength);
+        return util.str_pad(account, ibanFormat.accountLength, '0', 'STR_PAD_LEFT');
     },
 
+    /**
+     * @internal
+     */
     getBankNumber: function (bankCode, accountNumber, ibanFormat) {
         var bankCodeString;
 
@@ -207,9 +193,12 @@ var generator = {
             bankCodeString =  accountNumber.substring(0, ibanFormat.bankLength);
         }
         generator.validateLength(bankCodeString, ibanFormat.bankLength);
-        return generator.fillWithLeadingZeroBasedOnLength(bankCodeString, ibanFormat.bankLength);
+        return util.str_pad(bankCodeString, ibanFormat.bankLength, '0', 'STR_PAD_LEFT');
     },
 
+    /**
+     * @internal
+     */
     validateLength: function (string, length) {
         if (string.length !== length) {
             throw {
@@ -219,15 +208,24 @@ var generator = {
         }
     },
 
+    /**
+     * @internal
+     */
     calculateChecksum: function (bban) {
-        return 98 - generator.mod97(bban);
+        return 98 - util.mod97(bban);
     },
 
+    /**
+     * @internal
+     */
     calculateRIBChecksum: function(bankCode, bankCounter, account) {
         var sum = 89*parseInt(bankCode)+15*parseInt(bankCounter)+3*parseInt(account);
-        return 97 - generator.mod97(sum.toString());
+        return 97 - util.mod97(sum.toString());
     },
 
+    /**
+     * @internal
+     */
     replaceLettersFromBankCode: function (bankCode) {
         bankCode = bankCode.replace(/[AJ]/gi, '1');
         bankCode = bankCode.replace(/[BKS]/gi, '2');
@@ -242,18 +240,27 @@ var generator = {
         return bankCode;
     },
 
+    /**
+     * @internal
+     */
     getBBANFrom: function (bankCode, accountNumber, countryCode) {
-        return generator.convertToDigitString(bankCode) + generator.convertToDigitString(accountNumber) + generator.convertToDigitString(countryCode + '00');
+        return util.convertToDigitString(bankCode) + util.convertToDigitString(accountNumber) + util.convertToDigitString(countryCode + '00');
     },
 
+    /**
+     * @internal
+     */
     calculateIBAN: function (countryCode, checksum, bankNumberWithLeadingZeros, accountNumberWithLeadingZeros) {
-        return countryCode + generator.fillWithLeadingZeroBasedOnLength(checksum.toString(), 2) + bankNumberWithLeadingZeros.toUpperCase() + accountNumberWithLeadingZeros.toUpperCase();
+        return countryCode + util.str_pad(checksum.toString(), 2, '0', 'STR_PAD_LEFT') + bankNumberWithLeadingZeros.toUpperCase() + accountNumberWithLeadingZeros.toUpperCase();
     },
 
+    /**
+     * @internal
+     */
     validateIBAN: function (iban) {
-        var ccode = generator.convertToDigitString(iban.substring(0, 4));
+        var ccode = util.convertToDigitString(iban.substring(0, 4));
         var bban = iban.substring(4) + ccode;
-        if (generator.mod97(generator.convertToDigitString(bban)) !== 1) {
+        if (util.mod97(util.convertToDigitString(bban)) !== 1) {
             throw {
                 type: 'ValidationError',
                 message: 'Validating IBAN failed!'
@@ -261,6 +268,9 @@ var generator = {
         }
     },
 
+    /**
+     * @internal
+     */
     validateNotEmpty: function(value, type) {
         if (typeof value === 'undefined' || value === null || value === '') {
             throw {
@@ -270,6 +280,9 @@ var generator = {
         }
     },
 
+    /**
+     * @internal
+     */
     generateIBAN: function (ibanFormat, countryCode, bankCode, account) {
 
         var accountNumberWithLeadingZeros = generator.getAccountNumber(bankCode, account, ibanFormat);
@@ -317,8 +330,8 @@ var generator = {
      * @return object The resulting object with two function, success and error
      */
     generate: function (countryCode, bankCode, bankCounter, account) {
-        var result;
-        var successful = false;
+        var result, bankExist,
+            successful = false;
 
         try {
             generator.validateNotEmpty(countryCode, 'Country code');
@@ -326,18 +339,23 @@ var generator = {
 
             bankCode = generator.replaceLettersFromBankCode(bankCode);
 
-            var checksum = generator.calculateRIBChecksum(bankCode, bankCounter, account);
-            var ibanFormat = generator.getIbanFormatFrom(countryCode.toUpperCase());
-            var iban = generator.generateIBAN(ibanFormat, countryCode, bankCode+bankCounter, account+checksum);
-            var ibanPrint = generator.addSpaceAfterNumCharacters(iban, 4);
+            if (bankExists = helpers.bankExists(bankCode)) {
 
-            result = {
-                iban: iban,
-                iban_print: ibanPrint,
-                iban_format: ibanFormat
-            };
+                var checksum = generator.calculateRIBChecksum(bankCode, bankCounter, account);
+                var ibanFormat = generator.getIbanFormatFrom(countryCode.toUpperCase());
+                var iban = generator.generateIBAN(ibanFormat, countryCode, bankCode+bankCounter, account+checksum);
+                var ibanPrint = util.addSpaceAfterNumCharacters(iban, 4);
 
-            successful = true;
+                result = {
+                    iban: iban,
+                    iban_print: ibanPrint,
+                    iban_format: ibanFormat
+                };
+
+                successful = true;
+            } else {
+                result = {type: 'BankNotFound', message: 'Bank does not exists'};
+            }
         } catch (e) {
             result = e;
         }

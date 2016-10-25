@@ -1,6 +1,6 @@
 {
   "name": "iban-constructor",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "library to generate iban",
   "main": "index.js",
   "scripts": {
@@ -23,5 +23,11 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.1.2"
+  },
+  "dependencies": {
+    "csv-parse": "^1.1.7",
+    "csv-parser": "^1.11.0",
+    "fs": "0.0.1-security",
+    "should": "^11.1.1"
   }
 }

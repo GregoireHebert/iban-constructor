@@ -1,7 +1,18 @@
-Iban Generator
+Iban Constructor
 =========
 
-A small library providing utility methods to generate IBAN from country code, bank code and account code
+
+Generates an IBAN from the country code, bank code and account code. It returns an object with two callback functions, success and error. The success callback is called if the iban-object was successfully created and has three attributes:
+
+iban : The IBAN printed as an electronic text with no space
+iban_print : The IBAN printed with space on evry 4th character
+iban_format : The IBAN format based on formats-variable at top of iban.js
+
+If the iban resulted in an error the error callback will be called with an object containing two attributes:
+type : Type of the error
+message : The message containing details of what failed
+
+NB! If the bank code is null, the account number is the basis for collecting bank code
 
 ## Installation
 
@@ -9,11 +20,12 @@ A small library providing utility methods to generate IBAN from country code, ba
 
 ## Usage
 
-``` JS
+```javascript
   var ibanConstructor = require('iban-constructor')
-       generateIban = ibanConstructor.generate;
+          bankHelpers = require('iban-constructor/lib/bankHelpers')
+         generateIban = ibanConstructor.generate;
 
-  var generatedIban = generateIban('FR', '30004', 00001', '00000000001')
+  var generatedIban = generateIban('FR', '30004', '00001', '00000000001')
     .success(function (iban) {
       iban = {
         iban: "FR7630004000010000000000136",
@@ -36,6 +48,15 @@ A small library providing utility methods to generate IBAN from country code, ba
     .error(function (error) {
       // ...
     });
+
+    // to see all availables banks see `iban-constructor/lib/bankCodes.csv`
+    var Boolean = bankHelpers.bankExists('CodeBankOrBIC');
+    var Array = bankHelpers.findBicFromBankCode('CodeBank');
+    var Array = bankHelpers.findBankCodeFromBic('BIC');
+    var AlphaNumericString = bankHelpers.generateBankCode();
+    var NumericString = bankHelpers.generateBankCounter();
+    var NumericString = bankHelpers.generateAccount();
+    var AlphaNumericString = bankHelpers.generateIbanForBank('CodeBank');
 ```
 
 ## Tests
@@ -44,12 +65,13 @@ A small library providing utility methods to generate IBAN from country code, ba
 
 ## Release History
 
-* 1.0.0 Initial release
-* 1.0.1 Update doc
-* 1.0.2 Update doc
-* 1.0.3 Rename
+* 1.1.0 Add BankHelpers
 * 1.0.4 Update Readme
+* 1.0.3 Rename
+* 1.0.2 Update doc
+* 1.0.1 Update doc
+* 1.0.0 Initial release
 
-## Todo
+# Todo
 
-  * Handle swift codes and check bank exists
+* More tests
