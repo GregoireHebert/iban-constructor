@@ -65,6 +65,7 @@ NB! If the bank code is null, the account number is the basis for collecting ban
 
 ## Release History
 
+* 1.1.1 Fix checksum forced with a length of 2
 * 1.1.0 Add BankHelpers
 * 1.0.4 Update Readme
 * 1.0.3 Rename
