@@ -18,6 +18,11 @@ describe('#generate', function(){
             should(result.iban_print).be.equal('FR76 3000 4000 0100 0000 0000 136');
         });
     });
+
+    it('calculate a checksum and return a string of length 2', function() {
+        var checksum = ibanConstructor.calculateRIBChecksum('17515', '79897', '23429678218');
+        should(checksum).have.length(2);
+    })
 });
 
 describe('#helpers', function() {
@@ -46,7 +51,7 @@ describe('#helpers', function() {
         should(bankCode).have.length(5);
     });
 
-    it('generate a bank code', function() {
+    it('generate a bank counter', function() {
         bankCounter = bankHelpers.generateBankCounter();
         should(bankCounter).have.length(5).and.be.a.Number();
     });
@@ -54,5 +59,10 @@ describe('#helpers', function() {
     it('generate an account', function() {
         account = bankHelpers.generateAccount();
         should(account).have.length(11).and.be.a.Number();
+    });
+
+    it('generate a random iban', function(){
+        iban = bankHelpers.generateIbanForBank('17515');
+        should(iban).have.length(27);
     });
 });

@@ -212,7 +212,8 @@ var generator = {
      * @internal
      */
     calculateChecksum: function (bban) {
-        return 98 - util.mod97(bban);
+        var checksum = 98 - util.mod97(bban);
+        return util.str_pad(checksum.toString(), 2, '0', 'STR_PAD_LEFT');
     },
 
     /**
@@ -220,7 +221,8 @@ var generator = {
      */
     calculateRIBChecksum: function(bankCode, bankCounter, account) {
         var sum = 89*parseInt(bankCode)+15*parseInt(bankCounter)+3*parseInt(account);
-        return 97 - util.mod97(sum.toString());
+        var checksum = 97 - util.mod97(sum.toString());
+        return util.str_pad(checksum.toString(), 2, '0', 'STR_PAD_LEFT');
     },
 
     /**
@@ -251,7 +253,7 @@ var generator = {
      * @internal
      */
     calculateIBAN: function (countryCode, checksum, bankNumberWithLeadingZeros, accountNumberWithLeadingZeros) {
-        return countryCode + util.str_pad(checksum.toString(), 2, '0', 'STR_PAD_LEFT') + bankNumberWithLeadingZeros.toUpperCase() + accountNumberWithLeadingZeros.toUpperCase();
+        return countryCode + checksum + bankNumberWithLeadingZeros.toUpperCase() + accountNumberWithLeadingZeros.toUpperCase();
     },
 
     /**
