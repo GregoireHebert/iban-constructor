@@ -64,5 +64,15 @@ describe('#helpers', function() {
     it('generate a random iban', function(){
         iban = bankHelpers.generateIbanForBank('17515');
         should(iban).have.length(27);
+        should(iban).startWith('FR');
+    });
+
+    it('fail to generate an iban for not handled country', function(){
+        try {
+            iban = bankHelpers.generateIbanForBank('17515', 'DD');
+        } catch (e) {
+            should(e.type).be.exactly('IllegalCountryCodeError' );
+            should(e.message).be.exactly('Could not find IBAN format for country code: DD' );
+        }
     });
 });

@@ -60,7 +60,12 @@ NB! If the bank code is null, the account number is the basis for collecting ban
     var BankCode = bankHelpers.generateBankCode();
     var BankCounter = bankHelpers.generateBankCounter();
     var Account = bankHelpers.generateAccount();
-    var CodeBank = bankHelpers.generateIbanForBank('CodeBank');
+
+    try {
+        var ValidIban = bankHelpers.generateIbanForBank('17515');
+    } catch (e) {
+        // error...
+    }
 
     console.log('BankExists shoud be true', BankExists);
     console.log('Bic shoud be BNPAFRPPXXX', Bic);
@@ -68,7 +73,7 @@ NB! If the bank code is null, the account number is the basis for collecting ban
     console.log('BankCode shoud be a string', BankCode);
     console.log('BankCounter shoud be number', BankCounter);
     console.log('Account shoud be number', Account);
-    console.log('CodeBank shoud be an iban', CodeBank);
+    console.log('CodeBank shoud be valid iban', ValidIban);
 ```
 
 If you need to validate your iban you can use the [iban npm module](https://www.npmjs.com/package/iban)
@@ -76,7 +81,7 @@ If you need to validate your iban you can use the [iban npm module](https://www.
 ```javascript
 var IBAN = require('iban');
 IBAN.isValid('hello world'); // false
-IBAN.isValid('BE68539007547034'); // true
+IBAN.isValid(ValidIban); // true
 ```
 
 ## Tests
@@ -85,6 +90,7 @@ IBAN.isValid('BE68539007547034'); // true
 
 ## Release History
 
+* 1.2.0 Add country definition for helpers
 * 1.1.2 Add iban npm module reference in README and few cleaning
 * 1.1.1 Fix checksum forced with a length of 2
 * 1.1.0 Add BankHelpers
