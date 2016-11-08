@@ -27,6 +27,9 @@ NB! If the bank code is null, the account number is the basis for collecting ban
 
   var generatedIban = generateIban('FR', '30004', '00001', '00000000001')
     .success(function (iban) {
+
+      console.log(iban);
+      /*
       iban = {
         iban: "FR7630004000010000000000136",
         iban_print: "FR76 3000 4000 0100 0000 0000 136",
@@ -42,7 +45,8 @@ NB! If the bank code is null, the account number is the basis for collecting ban
           accountLength: 13,
           totalLength: 27
         }
-      };
+      };*/
+
         //...
     })
     .error(function (error) {
@@ -50,13 +54,29 @@ NB! If the bank code is null, the account number is the basis for collecting ban
     });
 
     // to see all availables banks see `iban-constructor/lib/bankCodes.csv`
-    var Boolean = bankHelpers.bankExists('CodeBankOrBIC');
-    var Array = bankHelpers.findBicFromBankCode('CodeBank');
-    var Array = bankHelpers.findBankCodeFromBic('BIC');
-    var AlphaNumericString = bankHelpers.generateBankCode();
-    var NumericString = bankHelpers.generateBankCounter();
-    var NumericString = bankHelpers.generateAccount();
-    var AlphaNumericString = bankHelpers.generateIbanForBank('CodeBank');
+    var BankExists = bankHelpers.bankExists('30004');
+    var Bic = bankHelpers.findBicFromBankCode('30004');
+    var Bank = bankHelpers.findBankCodeFromBic('BLICMCMCXXX');
+    var BankCode = bankHelpers.generateBankCode();
+    var BankCounter = bankHelpers.generateBankCounter();
+    var Account = bankHelpers.generateAccount();
+    var CodeBank = bankHelpers.generateIbanForBank('CodeBank');
+
+    console.log('BankExists shoud be true', BankExists);
+    console.log('Bic shoud be BNPAFRPPXXX', Bic);
+    console.log('Bank shoud be 13488', Bank);
+    console.log('BankCode shoud be a string', BankCode);
+    console.log('BankCounter shoud be number', BankCounter);
+    console.log('Account shoud be number', Account);
+    console.log('CodeBank shoud be an iban', CodeBank);
+```
+
+If you need to validate your iban you can use the [iban npm module](https://www.npmjs.com/package/iban)
+
+```javascript
+var IBAN = require('iban');
+IBAN.isValid('hello world'); // false
+IBAN.isValid('BE68539007547034'); // true
 ```
 
 ## Tests
@@ -65,6 +85,7 @@ NB! If the bank code is null, the account number is the basis for collecting ban
 
 ## Release History
 
+* 1.1.2 Add iban npm module reference in README and few cleaning
 * 1.1.1 Fix checksum forced with a length of 2
 * 1.1.0 Add BankHelpers
 * 1.0.4 Update Readme

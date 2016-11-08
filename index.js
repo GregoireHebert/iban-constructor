@@ -341,7 +341,7 @@ var generator = {
 
             bankCode = generator.replaceLettersFromBankCode(bankCode);
 
-            if (bankExists = helpers.bankExists(bankCode)) {
+            if (helpers.bankExists(bankCode)) {
 
                 var checksum = generator.calculateRIBChecksum(bankCode, bankCounter, account);
                 var ibanFormat = generator.getIbanFormatFrom(countryCode.toUpperCase());
